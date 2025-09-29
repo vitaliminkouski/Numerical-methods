@@ -23,9 +23,7 @@ void print_vector(const vec& v, const std::string& title, int count) {
     }
 }
 
-/**
- * @brief Функция для вычисления евклидовой нормы вектора.
- */
+// Функция для вычисления евклидовой нормы вектора.
 double vector_norm(const vec& v) {
     double norm = 0.0;
     for (double val : v) {
@@ -34,9 +32,7 @@ double vector_norm(const vec& v) {
     return std::sqrt(norm);
 }
 
-/**
- * @brief Вычисляет вектор разности v1 - v2.
- */
+// Вычисляет вектор разности v1 - v2
 vec vector_diff(const vec& v1, const vec& v2) {
     if (v1.size() != v2.size()) return {};
     vec diff(v1.size());
@@ -113,9 +109,7 @@ vec solve_ldlt(matrix A, vec b) {
     return x;
 }
 
-/**
- * @brief Метод Гаусса без выбора ведущего элемента.
- */
+// Метод Гаусса без выбора ведущего элемента.
 vec solve_gauss_without_chose(matrix A, vec b) {
     int n = A.size();
     
@@ -144,9 +138,7 @@ vec solve_gauss_without_chose(matrix A, vec b) {
     return x;
 }
 
-/**
- * @brief Метод Гаусса с выбором ведущего элемента по столбцу.
- */
+// Метод Гаусса с выбором ведущего элемента по столбцу.
 vec solve_gauss_with_chose(matrix A, vec b) {
     int n = A.size();
 
@@ -190,41 +182,56 @@ vec solve_gauss_with_chose(matrix A, vec b) {
 
 
 int main() {
-    // --- 1. Инициализация входных данных ---
     const int n = 2000;
-    const int m = 15; // Пример: номер в списке
-    const int k = 4;  // Пример: номер группы
+    const int m = 15; 
+    const int k = 4;  
 
     std::cout << "--- Входные данные ---\n";
     std::cout << "n = " << n << ", m = " << m << ", k = " << k << "\n\n";
 
-    // --- 2. Генерация матрицы A и векторов ---
+    // Генерация матрицы A и векторов
     matrix A_original(n, vec(n));
     vec x_exact(n);
     vec b_original(n, 0.0);
 
-    std::mt19937 gen(123); // Используем фиксированный seed для воспроизводимости
+    std::mt19937 gen(123); 
     std::uniform_real_distribution<> dis(-100.0, 0.0);
 
+    
     for (int i = 0; i < n; ++i) {
-        for (int j = 0; j <= i; ++j) {
-            if (i == j) {
-                if (i == 0) A_original[i][j] = std::pow(m + 1, k) + std::pow(m, k);
-                else A_original[i][j] = std::pow(m + i + 1, k) + std::pow(m + i, k);
-            } else {
-                A_original[i][j] = dis(gen);
-                A_original[j][i] = A_original[i][j];
-            }
+        for (int j = 0; j < i; ++j) {
+            A_original[i][j] = dis(gen);
+            A_original[j][i] = A_original[i][j]; 
         }
     }
-    for (int i = 0; i < n; ++i) x_exact[i] = m + i;
+
+    // Шаг 2: Вычисляем диагональные элементы на основе недиагональных
+    double sum_first_row = 0.0;
+    for (int j = 1; j < n; ++j) {
+        sum_first_row += A_original[0][j];
+    }
+    A_original[0][0] = -sum_first_row + 10*k;
+
+    for (int i = 1; i < n; ++i) {
+        double row_sum = 0.0;
+        for (int j = 0; j < n; ++j) {
+            if (i == j) continue;
+            row_sum += A_original[i][j];
+        }
+        A_original[i][i] = -row_sum + 10*k;
+    }
+    
+
+    for (int i = 0; i < n; ++i) {
+        x_exact[i] = m + i;
+    }
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < n; ++j) {
             b_original[i] += A_original[i][j] * x_exact[j];
         }
     }
 
-    // --- 3. Решение и сравнение методов ---
+    // Решение и сравнение методов
     std::cout << std::fixed << std::setprecision(8);
     
     // Метод 1: LDLT-разложение
@@ -237,7 +244,6 @@ int main() {
 
         print_vector(x_solution, "Первые 5 координат:", 5);
         
-        // *** ИЗМЕНЕНИЯ ЗДЕСЬ: ВЫВОД НОРМЫ НЕВЯЗКИ И ПОГРЕШНОСТИ ***
         double residual_norm = calculate_residual_norm(A_original, x_solution, b_original);
         std::cout << "Норма вектора невязки: " << residual_norm << std::endl;
         
@@ -257,7 +263,6 @@ int main() {
 
         print_vector(x_solution, "Первые 5 координат:", 5);
 
-        // *** ИЗМЕНЕНИЯ ЗДЕСЬ: ВЫВОД НОРМЫ НЕВЯЗКИ И ПОГРЕШНОСТИ ***
         double residual_norm = calculate_residual_norm(A_original, x_solution, b_original);
         std::cout << "Норма вектора невязки: " << residual_norm << std::endl;
 
@@ -279,7 +284,6 @@ int main() {
 
         print_vector(x_solution, "Первые 5 координат:", 5);
 
-        // *** ИЗМЕНЕНИЯ ЗДЕСЬ: ВЫВОД НОРМЫ НЕВЯЗКИ И ПОГРЕШНОСТИ ***
         double residual_norm = calculate_residual_norm(A_original, x_solution, b_original);
         std::cout << "Норма вектора невязки: " << residual_norm << std::endl;
 
