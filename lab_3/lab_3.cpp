@@ -29,11 +29,11 @@ int main() {
     // --- 1. Входные данные ---
     const int N_plus_1 = 2000; // Порядок матрицы
     const int N = N_plus_1 - 1;
-    const float m = 15.0f;      // Номер в списке группы
-    const float k = 4.0f;       // Номер группы
+    const float m = 15.0f;      
+    const float k = 4.0f;       
 
-    // Устанавливаем русский язык для вывода в консоль (для Windows)
-    // setlocale(LC_ALL, "Russian");
+    
+    setlocale(LC_ALL, "Russian");
 
     // --- 2. Формирование системы Ax = f ---
 
