@@ -12,7 +12,7 @@ using vec = std::vector<double>;
 
 // --- Вспомогательные функции (векторные операции) ---
 
-// Скалярное произведение векторов (алгоритм sxz [cite: 29-40])
+// Скалярное произведение векторов (алгоритм sxz )
 double dot_product(const vec& a, const vec& b) {
     double result = 0.0;
     for (size_t i = 0; i < a.size(); ++i) {
@@ -21,7 +21,7 @@ double dot_product(const vec& a, const vec& b) {
     return result;
 }
 
-// Умножение матрицы на вектор (алгоритм mvAx [cite: 11-28])
+// Умножение матрицы на вектор (алгоритм mvAx )
 vec mat_vec_mult(const matrix& A, const vec& x) {
     size_t n = A.size();
     vec result(n, 0.0);
@@ -116,11 +116,11 @@ vec solve_ldlt(matrix A, const vec& b) {
 // Алгоритм основан на псевдокоде 
 vec solve_cg(const matrix& A, const vec& f, double epsilon, int max_iter, int& iterations_out) {
     int n = f.size();
-    vec x(n, 0.0); // x0 = 0 (начальное приближение) [cite: 42, 536]
+    vec x(n, 0.0); // x0 = 0 (начальное приближение) 
     
-    // r0 = f - A*x0 = f (так как x0=0) [cite: 43]
+    // r0 = f - A*x0 = f (так как x0=0) 
     vec r = f; 
-    vec p = r; // p0 = r0 [cite: 43]
+    vec p = r; // p0 = r0 
     
     double r_norm = vector_norm(r);
     // (r_j, r_j) - скалярное произведение невязки на саму себя
@@ -131,7 +131,7 @@ vec solve_cg(const matrix& A, const vec& f, double epsilon, int max_iter, int& i
     for (int j = 0; j < max_iter; ++j) {
         iterations_out++;
         
-        // Проверка критерия остановки ||r|| < epsilon [cite: 44, 538]
+        // Проверка критерия остановки ||r|| < epsilon 
         if (std::sqrt(rr_curr) < epsilon) {
             break;
         }
@@ -139,13 +139,13 @@ vec solve_cg(const matrix& A, const vec& f, double epsilon, int max_iter, int& i
         vec Ap = mat_vec_mult(A, p); // Ap_j
         double Ap_p = dot_product(Ap, p); // (Ap_j, p_j)
         
-        // alpha_j = (r_j, r_j) / (Ap_j, p_j) [cite: 45]
+        // alpha_j = (r_j, r_j) / (Ap_j, p_j) 
         double alpha = rr_curr / Ap_p; 
         
-        // x_{j+1} = x_j + alpha * p_j [cite: 46]
+        // x_{j+1} = x_j + alpha * p_j 
         x = vec_add(x, vec_scale(alpha, p));
         
-        // r_{j+1} = r_j - alpha * Ap_j [cite: 47]
+        // r_{j+1} = r_j - alpha * Ap_j 
         r = vec_diff(r, vec_scale(alpha, Ap));
         
         double rr_next = dot_product(r, r); // (r_{j+1}, r_{j+1})
@@ -167,7 +167,7 @@ vec solve_cg(const matrix& A, const vec& f, double epsilon, int max_iter, int& i
 }
 
 int main() {
-    // Параметры задания [cite: 532-535]
+    // Параметры задания 
     const int n = 2000;
     const int m_student = 15; 
     const int k_group = 4;  
@@ -176,10 +176,10 @@ int main() {
     std::cout << "--- Лабораторная работа №5: Метод сопряженных градиентов ---\n";
     std::cout << "Входные данные: n = " << n << ", m = " << m_student << ", k = " << k_group << "\n\n";
 
-    // 1. Генерация матрицы A и точного решения (как в Лаб 2)
+    // 1. Генерация матрицы A и точного решения ==
     matrix A(n, vec(n));
     vec x_exact(n);
-    vec f(n, 0.0); // Правая часть (обозначена f в лаб 5) [cite: 531]
+    vec f(n, 0.0); // Правая часть (обозначена f в лаб 5) 
 
     std::mt19937 gen(123); 
     std::uniform_real_distribution<> dis(-100.0, 0.0);
